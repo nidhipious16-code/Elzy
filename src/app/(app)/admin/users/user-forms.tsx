@@ -6,6 +6,7 @@ import { ROLE_LABELS } from "@/lib/labels";
 import type { Profile, Role } from "@/lib/types";
 import { Alert, Field, inputClass } from "@/components/ui";
 import { SubmitButton } from "@/components/submit-button";
+import { KeepValuesForm } from "@/components/keep-values-form";
 
 type Opt = { id: string; name: string };
 
@@ -67,7 +68,7 @@ function ProfileFields({ teams, regions, profile, roles }: { teams: Opt[]; regio
 export function NewUserForm({ teams, regions }: { teams: Opt[]; regions: Opt[] }) {
   const [state, action] = useActionState(createUser, undefined);
   return (
-    <form action={action} className="space-y-4">
+    <KeepValuesForm action={action} className="space-y-4">
       <Feedback state={state} />
       <div className="grid gap-4 md:grid-cols-2">
         <Field label="Email *" hint="They sign in with this email.">
@@ -79,14 +80,14 @@ export function NewUserForm({ teams, regions }: { teams: Opt[]; regions: Opt[] }
       </div>
       <ProfileFields teams={teams} regions={regions} roles={["sales_person"]} />
       <SubmitButton>Add person</SubmitButton>
-    </form>
+    </KeepValuesForm>
   );
 }
 
 export function EditUserForm({ teams, regions, profile, roles }: { teams: Opt[]; regions: Opt[]; profile: Profile; roles: Role[] }) {
   const [state, action] = useActionState(updateUser, undefined);
   return (
-    <form action={action} className="space-y-4">
+    <KeepValuesForm action={action} className="space-y-4">
       <input type="hidden" name="id" value={profile.id} />
       <Feedback state={state} />
       <ProfileFields teams={teams} regions={regions} profile={profile} roles={roles} />
@@ -95,7 +96,7 @@ export function EditUserForm({ teams, regions, profile, roles }: { teams: Opt[];
         Account is active (untick to block sign-in)
       </label>
       <SubmitButton>Save changes</SubmitButton>
-    </form>
+    </KeepValuesForm>
   );
 }
 

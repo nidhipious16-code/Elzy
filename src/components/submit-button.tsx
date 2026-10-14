@@ -2,6 +2,7 @@
 
 import { useFormStatus } from "react-dom";
 import { buttonStyles } from "./ui";
+import { useKeepValuesPending } from "./keep-values-form";
 
 export function SubmitButton({
   children,
@@ -18,7 +19,9 @@ export function SubmitButton({
   name?: string;
   value?: string;
 }) {
-  const { pending } = useFormStatus();
+  const status = useFormStatus();
+  const keepValuesPending = useKeepValuesPending();
+  const pending = status.pending || keepValuesPending;
   return (
     <button type="submit" disabled={pending} name={name} value={value} className={`${buttonStyles[variant]} ${className}`}>
       {pending ? pendingText : children}

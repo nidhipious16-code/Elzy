@@ -5,6 +5,7 @@ import { useActionState, useState } from "react";
 import { createLead, type FormState } from "../actions";
 import { Alert, Field, inputClass } from "@/components/ui";
 import { SubmitButton } from "@/components/submit-button";
+import { KeepValuesForm } from "@/components/keep-values-form";
 
 type Opt = { id: string; name: string };
 
@@ -29,7 +30,7 @@ export function LeadForm({
   const [confirmDup, setConfirmDup] = useState(false);
 
   return (
-    <form action={action} className="space-y-5">
+    <KeepValuesForm action={action} className="space-y-5">
       {state?.error && <Alert>{state.error}</Alert>}
       {state?.duplicate && !confirmDup && (
         <Alert>
@@ -126,6 +127,6 @@ export function LeadForm({
         </span>
       </label>
       <SubmitButton className="w-full md:w-auto">Save lead</SubmitButton>
-    </form>
+    </KeepValuesForm>
   );
 }

@@ -37,7 +37,7 @@ The sample data creates people with password `Password1`: elzi@elzy.test (admin)
    - Auth → Passwords: minimum length 8, letters and digits.
    - Database → Extensions: make sure **pg_cron** is on. The migration schedules follow-up checks every 15 minutes.
 4. **Deploy the app** to Vercel (or any Node host) with the variables from `.env.example`. `SUPABASE_SERVICE_ROLE_KEY` must only be set on the server.
-5. **Create the first admin**: `node --env-file=.env.production scripts/create-admin.mjs "Full Name" you@company.com 'StrongPass1'`
+5. **Create the first admin**: add a `SETUP_CODE` variable (any secret phrase) when deploying, open `https://<your-app>/setup`, and fill in your name, email, password and that code. The page closes itself once an admin exists. You can then delete `SETUP_CODE`. Alternatively, from a terminal: `node --env-file=.env.production scripts/create-admin.mjs "Full Name" you@company.com 'StrongPass1'`.
 6. Sign in, then go to **Settings** to add teams, products and regions, and to **Team** to add people.
 
 ## Connect lead sources

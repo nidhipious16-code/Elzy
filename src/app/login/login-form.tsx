@@ -4,11 +4,12 @@ import { useActionState } from "react";
 import { signIn } from "./actions";
 import { Alert, Field, inputClass } from "@/components/ui";
 import { SubmitButton } from "@/components/submit-button";
+import { KeepValuesForm } from "@/components/keep-values-form";
 
 export function LoginForm({ notice }: { notice?: string }) {
   const [state, action] = useActionState(signIn, undefined);
   return (
-    <form action={action} className="space-y-5">
+    <KeepValuesForm action={action} className="space-y-5">
       {notice && <Alert>{notice}</Alert>}
       {state?.error && <Alert>{state.error}</Alert>}
       <Field label="Email">
@@ -21,6 +22,6 @@ export function LoginForm({ notice }: { notice?: string }) {
         Sign in
       </SubmitButton>
       <p className="text-center text-sm text-slate-500">Forgot your password? Ask your admin to reset it.</p>
-    </form>
+    </KeepValuesForm>
   );
 }

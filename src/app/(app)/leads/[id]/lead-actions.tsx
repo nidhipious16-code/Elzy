@@ -6,6 +6,7 @@ import { NEXT_STEPS, STATUS } from "@/lib/labels";
 import type { LeadStatus } from "@/lib/types";
 import { Alert, Field, buttonStyles, inputClass } from "@/components/ui";
 import { SubmitButton } from "@/components/submit-button";
+import { KeepValuesForm } from "@/components/keep-values-form";
 
 function Feedback({ state }: { state: ActionState }) {
   if (state?.error) return <Alert>{state.error}</Alert>;
@@ -26,7 +27,7 @@ export function StatusActions({ leadId, status, demoManagers }: { leadId: string
   if (steps.length === 0) return null;
 
   return (
-    <form action={action} className="space-y-4">
+    <KeepValuesForm action={action} className="space-y-4">
       <input type="hidden" name="lead_id" value={leadId} />
       <Feedback state={state} />
       <p className="font-semibold text-slate-700">What happened?</p>
@@ -98,7 +99,7 @@ export function StatusActions({ leadId, status, demoManagers }: { leadId: string
           </div>
         </div>
       )}
-    </form>
+    </KeepValuesForm>
   );
 }
 
