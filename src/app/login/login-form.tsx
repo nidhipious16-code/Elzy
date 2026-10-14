@@ -11,8 +11,8 @@ export function LoginForm({ notice }: { notice?: string }) {
     <form action={action} className="space-y-5">
       {notice && <Alert>{notice}</Alert>}
       {state?.error && <Alert>{state.error}</Alert>}
-      <Field label="Mobile number">
-        <input name="phone" type="tel" inputMode="tel" autoComplete="tel" placeholder="98765 43210" required className={inputClass} />
+      <Field label="Email">
+        <input name="email" type="email" inputMode="email" autoComplete="username" placeholder="you@company.com" required className={inputClass} />
       </Field>
       <Field label="Password">
         <input name="password" type="password" autoComplete="current-password" required className={inputClass} />

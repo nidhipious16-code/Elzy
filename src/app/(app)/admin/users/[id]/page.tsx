@@ -17,7 +17,7 @@ export default async function EditUserPage({ params }: { params: Promise<{ id: s
       <Link href="/admin/users" className="inline-flex items-center gap-1 text-slate-600 hover:text-slate-900">
         <ArrowLeft size={18} /> Team members
       </Link>
-      <PageHeader title={person.full_name} subtitle={person.phone} />
+      <PageHeader title={person.full_name} subtitle={[person.email, person.phone].filter(Boolean).join(" · ")} />
       <Card>
         <EditUserForm teams={ref.teams} regions={ref.regions} profile={person} roles={person.roles} />
       </Card>

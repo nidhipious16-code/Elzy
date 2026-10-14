@@ -13,7 +13,8 @@ export type LeadStatus =
 export type Profile = {
   id: string;
   full_name: string;
-  phone: string;
+  email: string;
+  phone: string | null;
   team_id: string | null;
   region_id: string | null;
   capacity: number;

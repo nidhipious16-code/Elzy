@@ -30,10 +30,11 @@ const people = [
 const ids = {};
 for (const [full_name, mobile, team_id, roles] of people) {
   const phone = `+91${mobile}`;
-  const { user } = must(await db.auth.admin.createUser({ phone, password: "Password1", phone_confirm: true }));
+  const email = `${full_name.split(" ")[0].toLowerCase()}@elzy.test`;
+  const { user } = must(await db.auth.admin.createUser({ email, password: "Password1", email_confirm: true }));
   const id = user.id;
   ids[full_name] = id;
-  must(await db.from("profiles").insert({ id, full_name, phone, team_id, capacity: 15 }));
+  must(await db.from("profiles").insert({ id, full_name, email, phone, team_id, capacity: 15 }));
   must(await db.from("user_roles").insert(roles.map((role) => ({ user_id: id, role }))));
 }
 
@@ -68,4 +69,4 @@ for (let i = 0; i < 24; i++) {
 }
 const month = new Date().toISOString().slice(0, 7) + "-01";
 must(await db.from("targets").insert([{ team_id: teams[0].id, month, revenue_target: 500000, conversion_target: 10 }, { user_id: ids["Ravi Sales"], month, revenue_target: 200000, conversion_target: 4 }]));
-console.log("Seeded. Sign in as 9000000001 / Password1 (admin), 9000000002 (manager), 9000000003 (sales), 9000000006 (demo).");
+console.log("Seeded. Password1 for everyone: elzi@elzy.test (admin), maya@elzy.test (manager), ravi@elzy.test (sales), deepa@elzy.test (demo).");

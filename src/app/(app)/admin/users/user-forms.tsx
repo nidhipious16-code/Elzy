@@ -22,6 +22,9 @@ function ProfileFields({ teams, regions, profile, roles }: { teams: Opt[]; regio
         <Field label="Full name *">
           <input name="full_name" defaultValue={profile?.full_name} required className={inputClass} />
         </Field>
+        <Field label="Mobile number" hint="For colleagues to reach them. Not used to sign in.">
+          <input name="phone" type="tel" defaultValue={profile?.phone ?? ""} className={inputClass} />
+        </Field>
         <Field label="Team">
           <select name="team_id" defaultValue={profile?.team_id ?? ""} className={inputClass}>
             <option value="">No team (sees across teams where allowed)</option>
@@ -67,8 +70,8 @@ export function NewUserForm({ teams, regions }: { teams: Opt[]; regions: Opt[] }
     <form action={action} className="space-y-4">
       <Feedback state={state} />
       <div className="grid gap-4 md:grid-cols-2">
-        <Field label="Mobile number *" hint="They sign in with this number.">
-          <input name="phone" type="tel" required className={inputClass} />
+        <Field label="Email *" hint="They sign in with this email.">
+          <input name="email" type="email" required className={inputClass} />
         </Field>
         <Field label="Starting password *" hint="At least 8 characters with a letter and a number.">
           <input name="password" type="text" autoComplete="new-password" required className={inputClass} />

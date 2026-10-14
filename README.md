@@ -8,7 +8,7 @@ An internal lead-management CRM, inspired by [Kylas](https://kylas.io/), for tea
 - **Automatic follow-ups** create reminders for each stage. After the maximum number of tries, the manager is alerted. Stale-lead alerts and demo reminders are included too.
 - **Roles**: Admin, Sales Manager, Sales Person, Call Executive, Demo Manager. One person can hold several roles. Access is enforced in the database with row-level security.
 - **Dashboard** with revenue against target, conversions and the lead funnel. Filters (product, status, region, source, team, person, dates) update the charts.
-- **Login** with mobile number + password. Only admins create accounts.
+- **Login** with email + password (free, no SMS needed). Only admins create accounts.
 - **Privacy**: consent is recorded per lead, an admin can erase a customer's personal data on request, every change is written to an audit log, and the app sets strict security headers.
 
 Stack: Next.js 15 (App Router, TypeScript, Tailwind) and Supabase (Postgres, Auth, row-level security, pg_cron).
@@ -25,20 +25,19 @@ node --env-file=.env.local scripts/seed-demo.mjs   # optional sample data
 npm run dev
 ```
 
-The sample data creates people with password `Password1`. The mobile numbers are 9000000001 (admin), 9000000002 (manager), 9000000003 (sales), 9000000005 (caller) and 9000000006 (demo manager).
+The sample data creates people with password `Password1`: elzi@elzy.test (admin), maya@elzy.test (manager), ravi@elzy.test (sales), cyril@elzy.test (caller) and deepa@elzy.test (demo manager).
 
 ## Deploy
 
 1. **Create a Supabase project.** Pick the Mumbai (ap-south-1) region so customer data stays in India.
 2. **Apply the database**: `npx supabase link --project-ref <ref>` then `npx supabase db push`.
 3. **Set up auth** in the Supabase dashboard:
-   - Auth → Sign In / Providers: turn **off** "Allow new users to sign up".
-   - Auth → Providers → **Phone**: turn on. Supabase asks for an SMS provider. Password sign-in never sends an SMS, so any provider (for example Twilio or Textlocal) works. Real credentials are only needed once OTP login is added.
-   - Auth → Providers → **Email**: turn off.
+   - Auth → Sign In / Providers: turn **off** "Allow new users to sign up". Keep the **Email** provider on.
+   - Auth → Providers → Email: turn **off** "Confirm email". Admins create accounts, so no confirmation emails are needed.
    - Auth → Passwords: minimum length 8, letters and digits.
    - Database → Extensions: make sure **pg_cron** is on. The migration schedules follow-up checks every 15 minutes.
 4. **Deploy the app** to Vercel (or any Node host) with the variables from `.env.example`. `SUPABASE_SERVICE_ROLE_KEY` must only be set on the server.
-5. **Create the first admin**: `node --env-file=.env.production scripts/create-admin.mjs "Full Name" 98xxxxxxxx 'StrongPass1'`
+5. **Create the first admin**: `node --env-file=.env.production scripts/create-admin.mjs "Full Name" you@company.com 'StrongPass1'`
 6. Sign in, then go to **Settings** to add teams, products and regions, and to **Team** to add people.
 
 ## Connect lead sources
@@ -68,4 +67,4 @@ npm run lint && npm run build
 
 ## Planned for phase 2
 
-OTP login, automatic WhatsApp/SMS follow-up messages, click-to-call with recording, quotations, email sync, AI call summaries, and phone-number masking per role.
+Optional OTP login, automatic WhatsApp/SMS follow-up messages, click-to-call with recording, quotations, email sync, AI call summaries, and phone-number masking per role.

@@ -2,18 +2,17 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { normalizePhone } from "@/lib/phone";
 
 export async function signIn(_prev: { error?: string } | undefined, formData: FormData) {
-  const phone = normalizePhone(String(formData.get("phone") ?? ""));
+  const email = String(formData.get("email") ?? "").trim().toLowerCase();
   const password = String(formData.get("password") ?? "");
-  if (!phone || !password) return { error: "Enter your mobile number and password." };
+  if (!email || !password) return { error: "Enter your email and password." };
 
   const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword({ phone, password });
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) {
-    // Same message whether the number or the password is wrong.
-    return { error: "That mobile number and password don't match. Please try again." };
+    // Same message whether the email or the password is wrong.
+    return { error: "That email and password don't match. Please try again." };
   }
   redirect("/");
 }

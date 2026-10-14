@@ -17,7 +17,7 @@ export default async function UsersPage() {
             <thead className="text-sm text-slate-600">
               <tr>
                 <th className="py-2">Name</th>
-                <th className="py-2">Mobile</th>
+                <th className="py-2">Email</th>
                 <th className="py-2">Roles</th>
                 <th className="py-2">Team</th>
                 <th className="py-2">Capacity</th>
@@ -32,7 +32,7 @@ export default async function UsersPage() {
                       {p.full_name}
                     </Link>
                   </td>
-                  <td className="py-2">{p.phone}</td>
+                  <td className="py-2">{p.email}</td>
                   <td className="py-2 text-sm">{p.roles.map((r) => ROLE_LABELS[r]).join(", ")}</td>
                   <td className="py-2">{nameOf(ref.teams, p.team_id) || "—"}</td>
                   <td className="py-2">{p.capacity}</td>

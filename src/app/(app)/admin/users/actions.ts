@@ -44,27 +44,30 @@ async function setRoles(userId: string, roles: Role[]) {
 
 export async function createUser(_prev: UserFormState, formData: FormData): Promise<UserFormState> {
   await requireRole("admin");
-  const phone = normalizePhone(String(formData.get("phone") ?? ""));
-  if (!phone) return { error: "Enter a valid mobile number" };
+  const email = z.string().trim().toLowerCase().email().safeParse(formData.get("email"));
+  if (!email.success) return { error: "Enter a valid email address" };
+  const rawPhone = String(formData.get("phone") ?? "").trim();
+  const phone = rawPhone ? normalizePhone(rawPhone) : null;
+  if (rawPhone && !phone) return { error: "That mobile number doesn't look right" };
   const pw = password.safeParse(formData.get("password"));
   if (!pw.success) return { error: pw.error.issues[0].message };
   const p = readProfile(formData);
   if (!p.success) return { error: p.error.issues[0].message };
 
   const admin = createAdminClient();
-  const { data, error } = await admin.auth.admin.createUser({ phone, password: pw.data, phone_confirm: true });
+  const { data, error } = await admin.auth.admin.createUser({ email: email.data, password: pw.data, email_confirm: true });
   if (error || !data.user) {
-    return { error: /already/i.test(error?.message ?? "") ? "Someone already uses this mobile number" : error?.message ?? "Could not create user" };
+    return { error: /already/i.test(error?.message ?? "") ? "Someone already uses this email" : error?.message ?? "Could not create user" };
   }
   const { roles, ...profile } = p.data;
-  const { error: profileError } = await admin.from("profiles").insert({ id: data.user.id, phone, ...profile });
+  const { error: profileError } = await admin.from("profiles").insert({ id: data.user.id, email: email.data, phone, ...profile });
   if (profileError) {
     await admin.auth.admin.deleteUser(data.user.id);
     return { error: profileError.message };
   }
   await setRoles(data.user.id, roles);
   revalidatePath("/admin/users");
-  return { ok: `${profile.full_name} can now sign in with ${phone}` };
+  return { ok: `${profile.full_name} can now sign in with ${email.data}` };
 }
 
 export async function updateUser(_prev: UserFormState, formData: FormData): Promise<UserFormState> {
@@ -78,7 +81,10 @@ export async function updateUser(_prev: UserFormState, formData: FormData): Prom
   }
   const admin = createAdminClient();
   const { roles, ...profile } = p.data;
-  const { error } = await admin.from("profiles").update({ ...profile, is_active }).eq("id", id);
+  const rawPhone = String(formData.get("phone") ?? "").trim();
+  const phone = rawPhone ? normalizePhone(rawPhone) : null;
+  if (rawPhone && !phone) return { error: "That mobile number doesn't look right" };
+  const { error } = await admin.from("profiles").update({ ...profile, phone, is_active }).eq("id", id);
   if (error) return { error: error.message };
   await setRoles(id, roles);
   // A switched-off person is signed out everywhere.
