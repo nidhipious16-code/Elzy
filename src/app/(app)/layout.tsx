@@ -33,7 +33,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     <div className="min-h-screen md:flex">
       <aside className="hidden w-64 shrink-0 flex-col border-r border-slate-200 bg-white p-4 md:flex">
         <Link href="/" className="mb-6 px-2 text-xl font-bold text-blue-700">
-          CRM Meshy
+          Elzy
         </Link>
         <SideNav items={items} />
         <div className="mt-auto space-y-3 border-t border-slate-200 pt-4">
@@ -53,7 +53,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       <div className="flex-1">
         <header className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-slate-200 bg-white/90 px-4 py-3 backdrop-blur md:px-8">
           <Link href="/" className="text-lg font-bold text-blue-700 md:hidden">
-            CRM Meshy
+            Elzy
           </Link>
           <div className="ml-auto flex items-center gap-2">
             {takesLeads && (

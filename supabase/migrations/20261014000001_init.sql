@@ -1,4 +1,4 @@
--- CRM Meshy: initial schema
+-- Elzy: initial schema
 -- Teams, users and roles, leads, the lead workflow, auto-assignment, follow-ups,
 -- targets, notifications and the audit log. Every table uses row-level security.
 

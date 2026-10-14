@@ -1,4 +1,4 @@
-# CRM Meshy
+# Elzy
 
 An internal lead-management CRM, inspired by [Kylas](https://kylas.io/), for teams that sell across several sales teams.
 
