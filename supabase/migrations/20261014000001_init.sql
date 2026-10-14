@@ -474,7 +474,9 @@ begin
   if new.demo_at is distinct from old.demo_at and new.demo_at is not null then
     insert into public.lead_activities (lead_id, actor_id, type, body)
     values (new.id, auth.uid(), 'demo', 'Demo set for ' || to_char(new.demo_at at time zone 'Asia/Kolkata', 'DD Mon YYYY HH24:MI') || ' IST');
-    delete from public.tasks where lead_id = new.id and kind = 'demo_reminder' and done_at is null;
+    -- a rescheduled demo replaces any earlier reminder
+    update public.tasks set done_at = now()
+    where lead_id = new.id and kind = 'demo_reminder' and done_at is null;
     insert into public.tasks (lead_id, assigned_to, title, kind, due_at)
     select new.id, u, 'Demo reminder: ' || new.full_name, 'demo_reminder',
            greatest(now(), new.demo_at - make_interval(hours => settings.demo_reminder_hours))
@@ -581,19 +583,16 @@ create or replace function public.audit_trigger()
 returns trigger
 language plpgsql security definer set search_path = public
 as $$
+declare
+  rec jsonb := case when tg_op = 'DELETE' then to_jsonb(old) else to_jsonb(new) end;
 begin
   insert into public.audit_log (actor_id, action, entity, entity_id, details)
   values (
     auth.uid(),
     lower(tg_op),
     tg_table_name,
-    coalesce((case when tg_op = 'DELETE' then to_jsonb(old) else to_jsonb(new) end)->>'id',
-             (case when tg_op = 'DELETE' then to_jsonb(old) else to_jsonb(new) end)->>'user_id'),
-    case
-      when tg_op = 'UPDATE' then jsonb_build_object('before', to_jsonb(old), 'after', to_jsonb(new))
-      when tg_op = 'DELETE' then to_jsonb(old)
-      else to_jsonb(new)
-    end
+    coalesce(rec->>'id', rec->>'user_id'),
+    case when tg_op = 'UPDATE' then jsonb_build_object('before', to_jsonb(old), 'after', to_jsonb(new)) else rec end
   );
   return null;
 end;
@@ -755,8 +754,7 @@ create policy "add leads" on public.leads for insert to authenticated
 create policy "update leads" on public.leads for update to authenticated
   using (public.can_see_lead(leads))
   with check (public.can_see_lead(leads) or public.can_manage_lead(leads));
-create policy "delete leads" on public.leads for delete to authenticated
-  using (public.is_admin());
+-- No delete policy: leads are never deleted, personal data is erased instead.
 
 -- Activities follow lead visibility; people can only add notes/calls as themselves.
 create policy "see activities" on public.lead_activities for select to authenticated
